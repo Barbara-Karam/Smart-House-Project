@@ -1,0 +1,51 @@
+int main()
+{
+
+	DIO_Init();
+	LCD_voidInit();
+	u8 Local_variable,NUM,Flag;
+	u32 ID1=0,ID2=0,result=0;
+	while(1)
+	{
+		KPD_u8GetKey(& Local_variable);
+		if (Local_variable != 0xFF)
+		{
+			LCD_voidSendChar(Local_variable);
+
+			switch(Local_variable)
+			{
+			case '0' :NUM=0;break;
+			case '1' :NUM=1;break;
+			case '2' :NUM=2;break;
+			case '3' :NUM=3;break;
+			case '4' :NUM=4;break;
+			case '5' :NUM=5;break;
+			case '6' :NUM=6;break;
+			case '7' :NUM=7;break;
+			case '8' :NUM=8;break;
+			case '9' :NUM=9;break;
+			case '+':ID2=ID1;ID1=0;Flag=1;NUM=0;break;
+			case '-':ID2=ID1;ID1=0;Flag=2;NUM=0;break;
+			case '*':ID2=ID1;ID1=0;Flag=3;NUM=0;break;
+			case '/':ID2=ID1;ID1=0;Flag=4;NUM=0;break;
+			case 'C':LCD_voidClear();ID1=0;ID2=0;NUM=0;break;
+			default:break;
+			}
+			ID1=(ID1*10)+NUM;
+			if(Local_variable == '=')
+			{
+				switch (Flag)
+				{
+				case 1:result=(ID1+ID2);break;
+				case 2:result=(ID1-ID2);break;
+				case 3:result=(ID1*ID2);break;
+				case 4:result=(ID1/ID2);break;
+				}
+				LCD_voidSendNum(result);
+			};
+		}
+	}
+	return 0;
+}
+
+

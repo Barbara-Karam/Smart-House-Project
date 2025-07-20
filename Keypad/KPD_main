@@ -1,0 +1,68 @@
+/*
+ * KPD_main.c
+ *
+ *  Created on: Sep 10, 2022
+ *      Author: brbar
+ */
+#include "STD_TYPES.h"
+#include "BIT_MATH.h"
+#define CPU 8000000UL
+#include <util/delay.h>
+
+#include"DIO_interface.h"
+
+#include "LCD_interface.h"
+#include "KPD_interface.h"
+#include "KPD_config.h"
+#include "KPD_private.h"
+
+int main()
+{
+
+	DIO_Init();
+	LCD_voidInit();
+	u8 Local_variable,NUM,Flag;
+	u32 ID1=0,ID2=0;
+	while(1)
+	{
+		KPD_u8GetKey(& Local_variable);
+		if (Local_variable != 0xFF)
+		{
+			LCD_voidSendChar(Local_variable);
+
+			switch(Local_variable)
+			{
+			case '0' :NUM=0;ID1=(ID1*10)+NUM;break;
+			case '1' :NUM=1;ID1=(ID1*10)+NUM;break;
+			case '2' :NUM=2;ID1=(ID1*10)+NUM;break;
+			case '3' :NUM=3;ID1=(ID1*10)+NUM;break;
+			case '4' :NUM=4;ID1=(ID1*10)+NUM;break;
+			case '5' :NUM=5;ID1=(ID1*10)+NUM;break;
+			case '6' :NUM=6;ID1=(ID1*10)+NUM;break;
+			case '7' :NUM=7;ID1=(ID1*10)+NUM;break;
+			case '8' :NUM=8;ID1=(ID1*10)+NUM;break;
+			case '9' :NUM=9;ID1=(ID1*10)+NUM;break;
+			case '+':ID2=ID1;ID1=0;Flag=1;NUM=0;break;
+			case '-':ID2=ID1;ID1=0;Flag=2;NUM=0;break;
+			case '*':ID2=ID1;ID1=0;Flag=3;NUM=0;break;
+			case '/':ID2=ID1;ID1=0;Flag=4;NUM=0;break;
+			case 'C':LCD_voidClear();ID1=0;ID2=0;NUM=0;break;
+			default:break;
+			}
+
+			if(Local_variable == '=')
+			{
+				switch (Flag)
+				{
+				case 1:LCD_voidSendNum(ID1+ID2);break;
+				case 2:LCD_voidSendNum(ID1-ID2);break;
+				case 3:LCD_voidSendNum(ID1*ID2);break;
+				case 4:LCD_voidSendNum(ID1/ID2);break;
+				}
+			};
+		}
+	}
+	return 0;
+}
+
+
